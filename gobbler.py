@@ -51,13 +51,17 @@ def main():
     if proto == 'tcp':
       pkts = loadpackets(pcap)
       x = parsePacket(pkts, pcap)
+      print GREEN + 'Uploading to Splunk via TCP' + END
       for s in x:
         splunk_shot_tcp(splunk_server, splunk_port, s)
+      print GREEN + 'Upload Complete' + END
     if proto == 'udp':
       pkts = loadpackets(pcap)
       x = parsePacket(pkts, pcap)
+      print GREEN + 'Uploading to Splunk via UDP' + END
       for s in x:
         splunk_shot_udp(splunk_server, splunk_port, s)
+      print GREEN + 'Upload Complete' + END
   if upload == 'json':
     print GREEN + 'Outputing to JSON' + END
     pkts = loadpackets(pcap)
