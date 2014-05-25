@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
 # Gobbler configuration file
+
 # Welcome to Gobbler, the Scapy pcap parser and dump scripts
+# Part of the sniffMyPackets suite http://www.sniffmypackets.net
 # Written by @catalyst256 / catalyst256@gmail.com
 
 import logging

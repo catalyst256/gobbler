@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 # Welcome to Gobbler, the Scapy pcap parser and dump scripts
+# Part of the sniffMyPackets suite http://www.sniffmypackets.net
 # Written by @catalyst256 / catalyst256@gmail.com
 
 import sys
@@ -19,9 +20,6 @@ YELLOW = '\033[93m'
 GREEN = '\033[92m'
 END = '\033[0m'
 RED = '\033[91m'
-
-# Lets do the important stuff first
-bind_layers(TCP, HTTP) # Binds the HTTP layers from the parser to TCP layers in Scapy so we can reference them
 
 # Load the gobbler.conf file
 conf = SafeConfigParser()

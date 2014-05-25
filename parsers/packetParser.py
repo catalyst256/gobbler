@@ -1,13 +1,16 @@
 #!/usr/bin/env python
 
-# Scapy based packet parser
-# Created by catalyst256@gmail.com
+# Welcome to Gobbler, the Scapy pcap parser and dump scripts
+# Part of the sniffMyPackets suite http://www.sniffmypackets.net
+# Written by @catalyst256 / catalyst256@gmail.com
 
 import datetime
 from http import *
 import logging
 logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
 from scapy.all import *
+
+bind_layers(TCP, HTTP)
 
 def parsePacket(pkts, pcap):
   packet = {}
