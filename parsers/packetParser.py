@@ -72,13 +72,13 @@ def parsePacket(pkts, pcap):
     if p.haslayer(Raw):
       p_raw = {"Raw": {"raw_load": p[Raw].load}}
       packet.update(p_raw)
-    if p.haslayer(HTTP):
-      p_http = {"HTTP": {"http_connection": p[HTTP].Connection, "http_cachecontrol": p[HTTP].CacheControl, "http_date": p[HTTP].Date,
-                "http_pragma": p[HTTP].Pragma, "http_trailer": p[HTTP].Trailer, "http_transferencoding": p[HTTP].TransferEncoding,
-                "http_upgrade": p[HTTP].Upgrade, "http_via": p[HTTP].Via, "http_warning": p[HTTP].Warning, "http_keepalive": p[HTTP].KeepAlive,
-                "http_allow": p[HTTP].Allow, "http_expires": p[HTTP].Expires, "http_lastmodified": p[HTTP].LastModified, "http_contentlength": p[HTTP].ContentLength,
-                "http_contentencoding": p[HTTP].ContentEncoding, "http_contenttype": p[HTTP].ContentType}}
-      packet.update(p_http)
+    # if p.haslayer(HTTP):
+    #   p_http = {"HTTP": {"http_connection": p[HTTP].Connection, "http_cachecontrol": p[HTTP].CacheControl, "http_date": p[HTTP].Date,
+    #             "http_pragma": p[HTTP].Pragma, "http_trailer": p[HTTP].Trailer, "http_transferencoding": p[HTTP].TransferEncoding,
+    #             "http_upgrade": p[HTTP].Upgrade, "http_via": p[HTTP].Via, "http_warning": p[HTTP].Warning, "http_keepalive": p[HTTP].KeepAlive,
+    #             "http_allow": p[HTTP].Allow, "http_expires": p[HTTP].Expires, "http_lastmodified": p[HTTP].LastModified, "http_contentlength": p[HTTP].ContentLength,
+    #             "http_contentencoding": p[HTTP].ContentEncoding, "http_contenttype": p[HTTP].ContentType}}
+    #   packet.update(p_http)
     if p.haslayer(HTTPrequest):
       p_http_req = {"HTTP Request": {"http_req_method": p[HTTPrequest].Method, "http_req_host": p[HTTPrequest].Host, "http_req_useragent": p[HTTPrequest].UserAgent,
                     "http_req_accept": p[HTTPrequest].Accept, "http_req_acceptlanguage": p[HTTPrequest].AcceptLanguage, "http_req_acceptencoding": p[HTTPrequest].AcceptEncoding,
