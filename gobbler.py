@@ -5,15 +5,11 @@
 # Written by @catalyst256 / catalyst256@gmail.com
 
 import sys
-import logging
 import optparse
 from ConfigParser import SafeConfigParser
-logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
-from parsers.http import *
 from parsers.loadpackets import loadpackets
 from parsers.packetParser import parsePacket
 from uploaders.uploaders import *
-from scapy.all import *
 
 # Add some colouring for printing packets later
 YELLOW = '\033[93m'
