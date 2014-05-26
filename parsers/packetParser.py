@@ -84,7 +84,7 @@ def parsePacket(pkts, pcap):
       #             "http_contentencoding": p[HTTP].ContentEncoding, "http_contenttype": p[HTTP].ContentType}}
       #   packet.update(p_http)
       if p.haslayer(HTTPrequest):
-        p_http_req = {"HTTP Request": {"http_req_method": p[HTTPrequest].Method, "http_req_host": p[HTTPrequest].Host, "http_req_useragent": p[HTTPrequest].UserAgent,
+        p_http_req = {"HTTPRequest": {"http_req_method": p[HTTPrequest].Method, "http_req_host": p[HTTPrequest].Host, "http_req_useragent": p[HTTPrequest].UserAgent,
                       "http_req_accept": p[HTTPrequest].Accept, "http_req_acceptlanguage": p[HTTPrequest].AcceptLanguage, "http_req_acceptencoding": p[HTTPrequest].AcceptEncoding,
                       "http_req_acceptcharset": p[HTTPrequest].AcceptCharset, "http_req_referer": p[HTTPrequest].Referer, "http_req_authorization": p[HTTPrequest].Authorization,
                       "http_req_expect": p[HTTPrequest].Expect, "http_req_from": p[HTTPrequest].From, "http_req_ifmatch": p[HTTPrequest].IfMatch, "http_req_te": p[HTTPrequest].TE,
@@ -93,10 +93,23 @@ def parsePacket(pkts, pcap):
                       "http_req_range": p[HTTPrequest].Range}}
         packet.update(p_http_req)
       if p.haslayer(HTTPresponse):
-        p_http_resp = {"HTTP Response": {"http_res_statusline": p[HTTPresponse].StatusLine, "http_res_acceptranges": p[HTTPresponse].AcceptRanges, "http_res_age": p[HTTPresponse].Age,
+        p_http_resp = {"HTTPResponse": {"http_res_statusline": p[HTTPresponse].StatusLine, "http_res_acceptranges": p[HTTPresponse].AcceptRanges, "http_res_age": p[HTTPresponse].Age,
                       "http_res_etag": p[HTTPresponse].ETag, "http_res_location": p[HTTPresponse].Location, "http_res_proxyauthenticate": p[HTTPresponse].ProxyAuthenticate,
                       "http_res_retryafter": p[HTTPresponse].RetryAfter, "http_res_server": p[HTTPresponse].Server, "http_res_vary": p[HTTPresponse].Vary, "http_res_wwwauthenticate": p[HTTPresponse].WWWAuthenticate}}
         packet.update(p_http_resp)
+      if p.haslayer(TCPerror):
+        p_tcp_icmp = {"TCPinICMP": {"tcp_icmp_sport": p[TCPerror].sport, "tcp_icmp_dport": p[TCPerror].dport, "tcp_icmp_seq": p[TCPerror].seq, "tcp_icmp_ack": p[TCPerror].ack,
+                      "tcp_icmp_dataofs": p[TCPerror].dataofs, "tcp_icmp_reserved": p[TCPerror].reserved, "tcp_icmp_flags": p[TCPerror].flags, "tcp_icmp_window": p[TCPerror].window,
+                      "tcp_icmp_chksum": p[TCPerror].chksum, "tcp_icmp_urgptr": p[TCPerror].urgptr, "tcp_icmp_options": p[TCPerror].options}}
+        packet.update(p_tcp_icmp)
+      if p.haslayer(UDPerror):
+        p_udp_icmp = {"UDPinICMP": {"udp_icmp_sport": p[UDPerror].sport, "udp_icmp_dport": p[UDPerror].dport, "udp_icmp_len": p[UDPerror].len, "udp_icmp_chksum": p[UDPerror].chksum}}
+        packet.update(p_udp_icmp)
+      if p.haslayer(NTP):
+        p_ntp = {"NTP": {"ntp_leap": p[NTP].leap, "ntp_version": p[NTP].version, "ntp_mode": p[NTP].mode, "ntp_stratum": p[NTP].stratum, "ntp_poll": p[NTP].poll,
+                 "ntp_precision": p[NTP].precision, "ntp_delay": p[NTP].delay, "ntp_dispersion": p[NTP].dispersion, "ntp_id": p[NTP].id, "ntp_ref": p[NTP].ref, "ntp_orig": p[NTP].orig,
+                 "ntp_recv": p[NTP].recv, "ntp_sent": p[NTP].sent}}
+        packet.update(p_ntp)
       count += 1
       yield packet
       packet.clear()
