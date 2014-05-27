@@ -15,7 +15,7 @@ RED = '\033[91m'
 
 bind_layers(TCP, HTTP)
 
-def parsePacket(pkts, pcap):
+def packet_full(pkts, pcap):
   packet = {}
   count = 1
   try:
@@ -76,13 +76,6 @@ def parsePacket(pkts, pcap):
       if p.haslayer(Raw):
         p_raw = {"Raw": {"raw_load": p[Raw].load}}
         packet.update(p_raw)
-      # if p.haslayer(HTTP):
-      #   p_http = {"HTTP": {"http_connection": p[HTTP].Connection, "http_cachecontrol": p[HTTP].CacheControl, "http_date": p[HTTP].Date,
-      #             "http_pragma": p[HTTP].Pragma, "http_trailer": p[HTTP].Trailer, "http_transferencoding": p[HTTP].TransferEncoding,
-      #             "http_upgrade": p[HTTP].Upgrade, "http_via": p[HTTP].Via, "http_warning": p[HTTP].Warning, "http_keepalive": p[HTTP].KeepAlive,
-      #             "http_allow": p[HTTP].Allow, "http_expires": p[HTTP].Expires, "http_lastmodified": p[HTTP].LastModified, "http_contentlength": p[HTTP].ContentLength,
-      #             "http_contentencoding": p[HTTP].ContentEncoding, "http_contenttype": p[HTTP].ContentType}}
-      #   packet.update(p_http)
       if p.haslayer(HTTPrequest):
         p_http_req = {"HTTPRequest": {"http_req_method": p[HTTPrequest].Method, "http_req_host": p[HTTPrequest].Host, "http_req_useragent": p[HTTPrequest].UserAgent,
                       "http_req_accept": p[HTTPrequest].Accept, "http_req_acceptlanguage": p[HTTPrequest].AcceptLanguage, "http_req_acceptencoding": p[HTTPrequest].AcceptEncoding,
@@ -116,3 +109,25 @@ def parsePacket(pkts, pcap):
   except Exception, e:
     print e
     pass
+
+def packet_summary(pkts, pcap):
+  packet = {}
+  count = 1
+  try:
+    for p in pkts:
+      p_header = {"header": {"packet_len": p[0].len, "timestamp": datetime.datetime.fromtimestamp(p.time).strftime('%Y-%m-%d %H:%M:%S.%f'), "packetnumber": count, "pcapfile": pcap}}
+      packet.update(p_header)
+      if p.haslayer(IP):
+        p_ip = {"IP": {"ip_src": p[IP].src, "ip_dst": p[IP].dst, "ip_ttl": p[IP].ttl}}
+        packet.update(p_ip)
+      p_proto = {"protocol": {"proto": p[0][2].name}}
+      packet.update(p_proto)
+      count += 1
+      yield packet
+      packet.clear()
+  except Exception, e:
+    print e
+    pass
+
+
+

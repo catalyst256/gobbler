@@ -8,7 +8,7 @@ import sys
 import optparse
 from ConfigParser import SafeConfigParser
 from parsers.loadpackets import loadpackets
-from parsers.packetParser import parsePacket
+from parsers.packetParser import *
 from uploaders.uploaders import *
 
 # Add some colouring for printing packets later
@@ -23,12 +23,17 @@ conf.read('gobbler.conf')
 
 splunk_server = conf.get('splunk', 'server').strip('\'')
 splunk_port = int(conf.get('splunk', 'port'))
+mongo_server = conf.get('mongodb', 'server').strip('\'')
+mongo_port = int(conf.get('mongodb', 'port'))
+mongo_db = conf.get('mongodb', 'db').strip('\'')
+mongo_collection = conf.get('mongodb', 'collection').strip('\'')
 
 def main():
   print GREEN + "Welcome to Gobbler, the pcap file muncher & regurgitater. Written by @catalyst256"  + END
-  parser = optparse.OptionParser(RED + "Usage: ./gobbler.py -p <pcap file> -u <upload> \nExample: ./gobbler.py -p test.pcap -u splunk" + END)
+  parser = optparse.OptionParser(RED + "Usage: ./gobbler.py -p <pcap file> -u <upload> -s <summary>\nExample: ./gobbler.py -p test.pcap -u splunk -s light"+ END)
   parser.add_option('-p', dest='pcapFile', type='string', help='specify pcap filename')
   parser.add_option('-u', dest='upload', type='string', help='specify upload method (i.e. splunk or json)')
+  parser.add_option('-s', dest='summary', type='string', help='specify summary level (full/light)')
   (options, args) = parser.parse_args()
   # Check options have been used and if they haven't exit with error
   if options.pcapFile == None:
@@ -39,29 +44,64 @@ def main():
     print parser.usage
     exit(0)
   upload = options.upload
+  if options.summary == None:
+    print parser.usage
+    exit(0)
+  summary = options.summary
   # Work out the listener for splunk and call the function
   if upload == 'splunk':
     proto = conf.get('splunk', 'protocol').strip('\'')
     if proto == 'tcp':
-      pkts = loadpackets(pcap)
-      x = parsePacket(pkts, pcap)
-      print GREEN + 'Uploading to Splunk via TCP' + END
-      for s in x:
-        splunk_shot_tcp(splunk_server, splunk_port, s)
-      print GREEN + 'Upload Complete' + END
+      if summary == 'full':
+        pkts = loadpackets(pcap)
+        x = packet_full(pkts, pcap)
+        print GREEN + 'Uploading to Splunk via TCP - Full Details' + END
+        for s in x:
+          splunk_shot_tcp(splunk_server, splunk_port, s)
+        print GREEN + 'Upload Complete' + END
+      if summary == 'light':
+        pkts = loadpackets(pcap)
+        x = packet_summary(pkts, pcap)
+        print GREEN + 'Uploading to Splunk via TCP - Summary Details' + END
+        for s in x:
+          splunk_shot_tcp(splunk_server, splunk_port, s)
+        print GREEN + 'Upload Complete' + END
     if proto == 'udp':
-      pkts = loadpackets(pcap)
-      x = parsePacket(pkts, pcap)
-      print GREEN + 'Uploading to Splunk via UDP' + END
-      for s in x:
-        splunk_shot_udp(splunk_server, splunk_port, s)
-      print GREEN + 'Upload Complete' + END
+      if summary == 'full':
+        pkts = loadpackets(pcap)
+        x = packet_full(pkts, pcap)
+        print GREEN + 'Uploading to Splunk via UDP - Full Details' + END
+        for s in x:
+          splunk_shot_udp(splunk_server, splunk_port, s)
+        print GREEN + 'Upload Complete' + END
+      if summary == 'light':
+        pkts = loadpackets(pcap)
+        x = packet_summary(pkts, pcap)
+        print GREEN + 'Uploading to Splunk via UDP - Summary Details' + END
+        for s in x:
+          splunk_shot_udp(splunk_server, splunk_port, s)
+        print GREEN + 'Upload Complete' + END
   if upload == 'json':
-    print GREEN + 'Outputing to JSON' + END
+    if summary == 'full':
+      print GREEN + 'Outputing to JSON - Full Details' + END
+      pkts = loadpackets(pcap)
+      x = packet_full(pkts, pcap)
+      for s in x:
+        json_dump(s)
+      print GREEN + 'Upload Complete' + END
+    if summary == 'light':
+      print GREEN + 'Outputing to JSON - Summary Details' + END
+      pkts = loadpackets(pcap)
+      x = packet_summary(pkts, pcap)
+      for s in x:
+        json_dump(s)
+      print GREEN + 'Upload Complete' + END
+  if upload == 'mongo':
+    print GREEN + 'Outputting to MongoDB' + END
     pkts = loadpackets(pcap)
-    x = parsePacket(pkts, pcap)
+    x = packet_full(pkts, pcap)
     for s in x:
-      json_dump(s)
+      mongo_dump(mongo_server, mongo_port, mongo_db, mongo_collection, s)
   
 if __name__ == "__main__":
   main()

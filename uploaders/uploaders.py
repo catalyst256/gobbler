@@ -5,6 +5,7 @@ import re
 from time import sleep
 import json
 
+
 # Welcome to Gobbler, the Scapy pcap parser and dump scripts
 # Part of the sniffMyPackets suite http://www.sniffmypackets.net
 # Written by @catalyst256 / catalyst256@gmail.com
@@ -44,3 +45,15 @@ def splunk_shot_tcp(splunk_server, splunk_port, s):
 def json_dump(s):
   t = json.dumps(s, sort_keys=True,indent=2, separators=(',', ': '), ensure_ascii=False, encoding="utf-8")
   print t
+
+def mongo_dump(mongo_server, mongo_port, mongo_db, mongo_collection, s):
+  from pymongo import MongoClient
+  try:
+    connection = MongoClient(mongo_server, mongo_port)
+    db = connection[mongo_db]
+    coll = db[mongo_collection]
+    post = s
+    coll.insert(post)
+  except Exception, e:
+    print e
+    pass
