@@ -129,5 +129,16 @@ def packet_summary(pkts, pcap):
     print e
     pass
 
+def packet_print(pkts, pcap):
+  count = 1
+  try:
+    for p in pkts:
+      if p.haslayer(IP):
+        packet = str(count), str(datetime.datetime.fromtimestamp(p.time).strftime('%Y-%m-%d %H:%M:%S')), str(p[IP].src), str(p[IP].dst), str(p[0][2].name), str(p[IP].len) 
+        print str(packet).replace(')', '').replace('(', '').replace('\'', '')
+      count += 1
+  except Exception, e:
+    print e
+    pass
 
 

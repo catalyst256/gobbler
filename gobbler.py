@@ -44,10 +44,11 @@ def main():
     print parser.usage
     exit(0)
   upload = options.upload
+  summary = ''
   if options.summary == None:
-    print parser.usage
-    exit(0)
-  summary = options.summary
+    summary = 'full'
+  else:
+    summary = options.summary
   # Work out the listener for splunk and call the function
   if upload == 'splunk':
     proto = conf.get('splunk', 'protocol').strip('\'')
@@ -102,6 +103,10 @@ def main():
     x = packet_full(pkts, pcap)
     for s in x:
       mongo_dump(mongo_server, mongo_port, mongo_db, mongo_collection, s)
+  if upload == 'screen':
+    print GREEN + 'Outputting to Screen' + END
+    pkts = loadpackets(pcap)
+    packet_print(pkts, pcap)
   
 if __name__ == "__main__":
   main()
