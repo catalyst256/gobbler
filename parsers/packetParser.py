@@ -12,6 +12,7 @@ from scapy.all import *
 
 END = '\033[0m'
 RED = '\033[91m'
+GREEN = '\033[92m'
 
 bind_layers(TCP, HTTP)
 
@@ -135,7 +136,7 @@ def packet_print(pkts, pcap):
     for p in pkts:
       if p.haslayer(IP):
         packet = str(count), str(datetime.datetime.fromtimestamp(p.time).strftime('%Y-%m-%d %H:%M:%S')), str(p[IP].src), str(p[IP].dst), str(p[0][2].name), str(p[IP].len) 
-        print str(packet).replace(')', '').replace('(', '').replace('\'', '')
+        print GREEN + str(packet).replace(')', '').replace('(', '').replace('\'', '') + END
       count += 1
   except Exception, e:
     print e
