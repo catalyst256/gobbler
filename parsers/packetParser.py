@@ -104,6 +104,24 @@ def packet_full(pkts, pcap):
                  "ntp_precision": p[NTP].precision, "ntp_delay": p[NTP].delay, "ntp_dispersion": p[NTP].dispersion, "ntp_id": p[NTP].id, "ntp_ref": p[NTP].ref, "ntp_orig": p[NTP].orig,
                  "ntp_recv": p[NTP].recv, "ntp_sent": p[NTP].sent}}
         packet.update(p_ntp)
+      if p.haslayer(BOOTP):
+        p_bootp = {"BOOTP": {"bootp_op": p[BOOTP].op, "bootp_htype": p[BOOTP].htype, "bootp_hlen": p[BOOTP].hlen, "bootp_hops": p[BOOTP].hops, "bootp_xid": p[BOOTP].xid,
+                  "bootp_secs": p[BOOTP].secs, "bootp_flags": p[BOOTP].flags, "bootp_ciaddr": p[BOOTP].ciaddr, "bootp_yiaddr": p[BOOTP].yiaddr, "bootp_siaddr": p[BOOTP].siaddr,
+                  "bootp_giaddr": p[BOOTP].giaddr, "bootp_chaddr": p[BOOTP].chaddr, "bootp_sname": p[BOOTP].sname, "bootp_file": p[BOOTP].file, "bootp_options": p[BOOTP].options}}
+        packet.update(p_bootp)
+      if p.haslayer(DHCP):
+        p_dhcp = {"DHCP": {"dhcp_options": p[DHCP].options}}
+        packet.update(p_dhcp)
+      if p.haslayer(HSRP):
+        p_hsrp = {"HRSP": {"hsrp_version": p[HSRP].version, "hsrp_opcode": p[HSRP].opcode, "hsrp_state": p[HSRP].state, "hsrp_hellotime": p[HSRP].hellotime, "hsrp_holdtime": p[HSRP].holdtime,
+                          "hsrp_priority": p[HSRP].priority, "hsrp_group": p[HSRP].group, "hsrp_reserved": p[HSRP].reserved, "hsrp_auth": p[HSRP].auth,
+                          "hsrp_virtualIP": p[HSRP].virtualIP}}
+        packet.update(p_hsrp)
+      if p.haslayer(STP):
+        p_stp = {"STP": {"stp_proto": p[STP].proto, "stp_version": p[STP].version, "stp_bpudtype": p[STP].bpdutype, "stp_bpduflags": p[STP].bpduflags, "stp_rootid": p[STP].rootid, "stp_rootmac": p[STP].rootmac,
+                "stp_pathcost": p[STP].pathcost, "stp_bridgeid": p[STP].bridgeid, "stp_bridgemac": p[STP].bridgemac, "stp_portid": p[STP].portid, "stp_age": p[STP].age, "stp_maxage": p[STP].maxage,
+                "stp_hellotime": p[STP].hellotime, "stp_fwddelay": p[STP].fwddelay}}
+        packet.update(p_stp)
       count += 1
       yield packet
       packet.clear()
