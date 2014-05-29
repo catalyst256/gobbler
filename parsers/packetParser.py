@@ -16,6 +16,46 @@ GREEN = '\033[92m'
 
 bind_layers(TCP, HTTP)
 
+def rename_layer(x, n):
+  n = n.lower().replace(' ', '_') + '_'
+  return dict((n+k,f(v) if hasattr(v,'keys') else v) for k,v in x.items())
+
+def sort_layers(s):
+  for k in sorted(s):
+    return k, s[k]
+
+def find_layers(pkts, pcap):
+  packet = {}
+  count = 1
+  try:
+    for p in pkts:    
+      header = {"Buffer": {"timestamp": datetime.datetime.fromtimestamp(p.time).strftime('%Y-%m-%d %H:%M:%S.%f'), "packetnumber": count, "pcapfile": pcap}}
+      packet.update(header)
+      counter = 0
+      while True:
+        layer = p.getlayer(counter)
+        if (layer != None):
+          i = int(counter)
+          x = p[0][i].fields
+          if layer.name == 'DNS':
+            del x['qd']
+            del x['an']
+            del x['ns']
+          else:
+            pass  
+          s = rename_layer(x, layer.name)
+          v = '{"' + layer.name + '":' + str(s) + '}'
+          s = eval(v)
+          packet.update(s)
+        else:
+          break
+        counter += 1
+      count += 1
+      yield packet
+      packet.clear()
+  except Exception, e:
+    print e
+
 def packet_full(pkts, pcap):
   packet = {}
   count = 1

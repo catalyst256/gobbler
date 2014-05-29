@@ -22,3 +22,4 @@ def loadpackets(pcap):
   p = rdpcap(pcap)
   print YELLOW + 'Number of packets: ' + str(len(p)) + END
   return p
+  

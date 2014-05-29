@@ -23,7 +23,7 @@ def splunk_shot_udp(splunk_server, splunk_port, s):
     i = ','.join("%s=%r" % (key,val) for (key,val) in s.iteritems())
     i = re.sub('\w{1,}={', '', i)
     i = re.sub('[0-9]{1,2}={\D{5}', '', i)
-    i = i.replace('{', '').replace('}','').replace(': ', '=').replace('\'', '').replace('\r\n', '')
+    i = i.replace('{', '').replace('}','').replace(': ', '=').replace('\'', '')
     sock.send(i)
     sock.close()
   except Exception, e:
@@ -36,8 +36,9 @@ def splunk_shot_tcp(splunk_server, splunk_port, s):
     i = ', '.join("%s=%r" % (key,val) for (key,val) in s.iteritems())
     i = re.sub('\w{1,}={', '', i)
     i = re.sub('[0-9]{1,2}={\D{5}', '', i)
+    i = re.sub('HTTP ', '', i)
     i = i.replace('{', '').replace('}','').replace('\'', '').replace(': ', '=')
-    sock.sendall(i)
+    sock.send(i)
   except Exception, e:
     print e
   sock.close()

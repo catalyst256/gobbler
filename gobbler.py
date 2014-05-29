@@ -55,7 +55,7 @@ def main():
     if proto == 'tcp':
       if summary == 'full':
         pkts = loadpackets(pcap)
-        x = packet_full(pkts, pcap)
+        x = find_layers(pkts, pcap)
         print GREEN + 'Uploading to Splunk via TCP - Full Details' + END
         for s in x:
           splunk_shot_tcp(splunk_server, splunk_port, s)
@@ -70,7 +70,7 @@ def main():
     if proto == 'udp':
       if summary == 'full':
         pkts = loadpackets(pcap)
-        x = packet_full(pkts, pcap)
+        x = find_layers(pkts, pcap)
         print GREEN + 'Uploading to Splunk via UDP - Full Details' + END
         for s in x:
           splunk_shot_udp(splunk_server, splunk_port, s)
@@ -86,8 +86,9 @@ def main():
     if summary == 'full':
       print GREEN + 'Outputing to JSON - Full Details' + END
       pkts = loadpackets(pcap)
-      x = packet_full(pkts, pcap)
+      x = find_layers(pkts, pcap)
       for s in x:
+        # print s
         json_dump(s)
       print GREEN + 'Upload Complete' + END
     if summary == 'light':
