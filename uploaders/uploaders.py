@@ -5,7 +5,6 @@ import re
 from time import sleep
 import json
 
-
 # Welcome to Gobbler, the Scapy pcap parser and dump scripts
 # Part of the sniffMyPackets suite http://www.sniffmypackets.net
 # Written by @catalyst256 / catalyst256@gmail.com
@@ -28,6 +27,10 @@ def splunk_shot_udp(splunk_server, splunk_port, s):
     sock.close()
   except Exception, e:
     print e
+
+def sort_layers(s):
+  for k in sorted(s):
+    return k, s[k]
 
 def splunk_shot_tcp(splunk_server, splunk_port, s):
   try:

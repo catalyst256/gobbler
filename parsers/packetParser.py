@@ -9,6 +9,7 @@ from http import *
 import logging
 logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
 from scapy.all import *
+from collections import OrderedDict
 
 END = '\033[0m'
 RED = '\033[91m'
@@ -20,17 +21,13 @@ def rename_layer(x, n):
   n = n.lower().replace(' ', '_') + '_'
   return dict((n+k,f(v) if hasattr(v,'keys') else v) for k,v in x.items())
 
-def sort_layers(s):
-  for k in sorted(s):
-    return k, s[k]
-
 def find_layers(pkts, pcap):
-  packet = {}
+  packet = OrderedDict()
   count = 1
   try:
-    for p in pkts:    
+    for p in pkts:
       header = {"Buffer": {"timestamp": datetime.datetime.fromtimestamp(p.time).strftime('%Y-%m-%d %H:%M:%S.%f'), "packetnumber": count, "pcapfile": pcap}}
-      packet.update(header)
+      packet.update(header)  
       counter = 0
       while True:
         layer = p.getlayer(counter)
