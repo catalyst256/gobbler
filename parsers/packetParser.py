@@ -34,10 +34,14 @@ def find_layers(pkts, pcap):
         if (layer != None):
           i = int(counter)
           x = p[0][i].fields
-          if layer.name == 'DNS':
-            del x['qd']
-            del x['an']
-            del x['ns']
+          if layer.name == 'DNS' or 'Link Local Multicast Node Resolution - Query':
+            try:
+              del x['qd']
+              del x['an']
+              del x['ns']
+              del x['ar']
+            except:
+              pass
           else:
             pass  
           s = rename_layer(x, layer.name)
