@@ -101,7 +101,7 @@ def main():
   if upload == 'mongo':
     print GREEN + 'Outputting to MongoDB' + END
     pkts = loadpackets(pcap)
-    x = packet_full(pkts, pcap)
+    x = find_layers(pkts, pcap)
     for s in x:
       mongo_dump(mongo_server, mongo_port, mongo_db, mongo_collection, s)
   if upload == 'screen':

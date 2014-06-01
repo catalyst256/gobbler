@@ -28,6 +28,10 @@ def splunk_shot_udp(splunk_server, splunk_port, s):
   except Exception, e:
     print e
 
+def sort_layers(s):
+  for k in sorted(s):
+    return k, s[k]
+
 def splunk_shot_tcp(splunk_server, splunk_port, s):
   try:
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

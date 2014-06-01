@@ -9,15 +9,17 @@ import re
 
 def exclude_layers(x, xname):
   # This is here to deal with the way that scapy stacks some of it's layers together which makes extracting them difficult.
+  # Deal with IP packets that have "options"
   if xname == 'IP':
     if x['options'] != None:
       d = dict((k, v) for k, v in x.iteritems() if k not in 'options')
       return d
+  # DNS packets
   if xname == 'DNS':
     if (x['qd'] or x['an'] or x['ar'] or x['ns']) != None:
       d = dict((k, v) for k, v in x.iteritems() if k not in ('qd', 'an', 'ns', 'ar'))
       return d
-
+  # LLMNR are part multicast, part DNS, wholly a bitch to parse
   if xname == 'Link Local Multicast Node Resolution - Query':
     if (x['qd'] or x['an'] or x['ar'] or x['ns']) != None:
       d = dict((k, v) for k, v in x.iteritems() if k not in ('qd', 'an', 'ns', 'ar'))
