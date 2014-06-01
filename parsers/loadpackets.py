@@ -7,6 +7,7 @@
 # Written by @catalyst256 / catalyst256@gmail.com
 
 import logging
+import os
 logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
 from scapy.all import rdpcap
 
@@ -18,8 +19,11 @@ END = '\033[0m'
 RED = '\033[91m'
 
 def loadpackets(pcap):
-  print GREEN + 'Loading pcap file: ' + pcap + END
-  p = rdpcap(pcap)
-  print YELLOW + 'Number of packets: ' + str(len(p)) + END
-  return p
+  if os.path.isfile(pcap):
+    print GREEN + 'Loading pcap file: ' + pcap + END
+    p = rdpcap(pcap)
+    print YELLOW + 'Number of packets: ' + str(len(p)) + END
+    return p
+  else:
+    print RED + 'ERROR: You sure that\'s the right file location???: [' + pcap + ']' + END
   

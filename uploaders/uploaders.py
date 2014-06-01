@@ -41,7 +41,8 @@ def splunk_shot_tcp(splunk_server, splunk_port, s):
     i = re.sub('[0-9]{1,2}={\D{5}', '', i)
     i = re.sub('HTTP ', '', i)
     i = i.replace('{', '').replace('}','').replace('\'', '').replace(': ', '=')
-    sock.send(i)
+    # sock.send(i)
+    print i
   except Exception, e:
     print e
   sock.close()
