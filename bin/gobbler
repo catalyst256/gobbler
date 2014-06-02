@@ -7,9 +7,9 @@
 import sys
 import optparse
 from ConfigParser import SafeConfigParser
-from parsers.loadpackets import loadpackets
-from parsers.packetParser import *
-from uploaders.uploaders import *
+from gobbler.parsers.loadpackets import loadpackets
+from gobbler.parsers.packetParser import *
+from gobbler.uploaders.uploaders import *
 
 # Add some colouring for printing packets later
 YELLOW = '\033[93m'
@@ -17,23 +17,13 @@ GREEN = '\033[92m'
 END = '\033[0m'
 RED = '\033[91m'
 
-# Load the gobbler.conf file
-conf = SafeConfigParser()
-conf.read('gobbler.conf')
-
-splunk_server = conf.get('splunk', 'server').strip('\'')
-splunk_port = int(conf.get('splunk', 'port'))
-mongo_server = conf.get('mongodb', 'server').strip('\'')
-mongo_port = int(conf.get('mongodb', 'port'))
-mongo_db = conf.get('mongodb', 'db').strip('\'')
-mongo_collection = conf.get('mongodb', 'collection').strip('\'')
-
 def main():
   print GREEN + "Welcome to Gobbler, the pcap file muncher & regurgitater. Written by @catalyst256"  + END
   parser = optparse.OptionParser(RED + "Usage: ./gobbler.py -p <pcap file> -u <upload> -s <summary>\nExample: ./gobbler.py -p test.pcap -u splunk -s light"+ END)
   parser.add_option('-p', dest='pcapFile', type='string', help='specify pcap filename')
   parser.add_option('-u', dest='upload', type='string', help='specify upload method (i.e. splunk or json)')
   parser.add_option('-s', dest='summary', type='string', help='specify summary level (full/light)')
+  parser.add_option('-c', dest='conf', type='string', help='configuration file')
   (options, args) = parser.parse_args()
   # Check options have been used and if they haven't exit with error
   if options.pcapFile == None:
@@ -49,6 +39,19 @@ def main():
     summary = 'full'
   else:
     summary = options.summary
+  # Load the gobbler.conf file
+  conf = SafeConfigParser()
+  if options.conf:
+    conf.read(options.conf)
+  else:
+    conf.read('config/gobbler.conf')
+  splunk_server = conf.get('splunk', 'server').strip('\'')
+  splunk_port = int(conf.get('splunk', 'port'))
+  mongo_server = conf.get('mongodb', 'server').strip('\'')
+  mongo_port = int(conf.get('mongodb', 'port'))
+  mongo_db = conf.get('mongodb', 'db').strip('\'')
+  mongo_collection = conf.get('mongodb', 'collection').strip('\'')
+
   # Work out the listener for splunk and call the function
   if upload == 'splunk':
     proto = conf.get('splunk', 'protocol').strip('\'')

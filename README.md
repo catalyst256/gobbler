@@ -1,4 +1,4 @@
-gobbler - "Eating it's way through your pcap files"
+gobbler - "Gobbling it's way through your pcap files"
 =======
 
 Gobbler was written to allow you to take a pcap file and import into a number of different services.
