@@ -5,8 +5,8 @@
 # Written by @catalyst256 / catalyst256@gmail.com
 
 import datetime
-from layers.http import *
-from layers.BadLayers import *
+from gobbler.layers.http import *
+from gobbler.layers.BadLayers import *
 import logging
 logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
 from scapy.all import *
