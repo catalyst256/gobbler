@@ -27,7 +27,7 @@ def find_layers(pkts, pcap):
   count = 1
   try:
     for p in pkts:
-      header = {"Buffer": {"timestamp": datetime.datetime.fromtimestamp(p.time).strftime('%Y-%m-%d %H:%M:%S.%f'), "packet_len": p[0].len, "packetnumber": count, "pcapfile": pcap}}
+      header = {"Buffer": {"timestamp": datetime.datetime.fromtimestamp(p.time).strftime('%Y-%m-%d %H:%M:%S.%f'), "packetnumber": count, "pcapfile": pcap}}
       packet.update(header)  
       counter = 0
       while True:
@@ -46,22 +46,22 @@ def find_layers(pkts, pcap):
       count += 1
       yield packet
       packet.clear()
-  except Exception, e:
-    print RED + 'Error within packet: ' + str(count) + ' on layer: ' + layer.name + END
+  except Exception as e:
+    print RED + 'Error within packet: ' + str(count) + ', the error was: ' + str(e) + END
 
 def packet_summary(pkts, pcap):
   packet = OrderedDict()
   count = 1
   try:
     for p in pkts:
-      p_header = {"Buffer": {"timestamp": datetime.datetime.fromtimestamp(p.time).strftime('%Y-%m-%d %H:%M:%S.%f'), "packet_len": p[0].len, "packetnumber": count, "pcapfile": pcap}}
-      packet.update(p_header)
       if p.haslayer(IP):
+        p_header = {"Buffer": {"timestamp": datetime.datetime.fromtimestamp(p.time).strftime('%Y-%m-%d %H:%M:%S.%f'), "packet_len": p[0].len, "packetnumber": count, "pcapfile": pcap}}
+        packet.update(p_header)
         p_ip = {"IP": {"ip_src": p[IP].src, "ip_dst": p[IP].dst, "ip_ttl": p[IP].ttl}}
         packet.update(p_ip)
-      p_proto = {"Protocol": {"proto": p[0][2].name}}
-      packet.update(p_proto)
-      count += 1
+        p_proto = {"Protocol": {"proto": p[0][2].name}}
+        packet.update(p_proto)
+        count += 1
       yield packet
       packet.clear()
   except Exception, e:
