@@ -9,8 +9,13 @@ config = {
     'url': 'https://github.com/catalyst256/gobbler',
     'download_url': 'https://github.com/catalyst256/gobbler',
     'author_email': 'catalyst256@gmail.com',
-    'version': '0.1.1',
-    'install_requires': [''], #required modules
+    'version': '0.1.3',
+    'install_requires': [
+        'pymongo >= 2.6.3',
+        'simplejson >= 3.3.2',
+        'scapy == 2.2.0-dev',
+        'requests >= 2.2.1'
+    ],
     'packages': ['gobbler', 'gobbler/layers', 'gobbler/parsers', 'gobbler/uploaders'], 
     'scripts': ['bin/gobbler'],
     'name': 'gobbler'
