@@ -37,7 +37,7 @@ def find_layers(pkts, pcap):
           x = p[0][i].fields
           t = exclude_layers(x, layer.name)
           s = rename_layer(t, layer.name)
-          v = '{"' + layer.name + str(i) + '":' + str(s) + '}'
+          v = '{"[' + str(i) + ']' + layer.name + '":' + str(s) + '}'
           s = eval(v)
           packet.update(s)
         else:

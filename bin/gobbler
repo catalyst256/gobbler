@@ -44,7 +44,7 @@ def main():
   if options.conf:
     conf.read(options.conf)
   else:
-    conf.read('config/gobbler.conf')
+    conf.read('/etc/gobbler.conf')
   splunk_server = conf.get('splunk', 'server').strip('\'')
   splunk_port = int(conf.get('splunk', 'port'))
   mongo_server = conf.get('mongodb', 'server').strip('\'')
