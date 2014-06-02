@@ -55,5 +55,9 @@ def exclude_layers(x, xname):
       d = re.sub(']>', '', d)
       s = eval(d)
       return s
+  if xname == 'DHCP6 Client Identifier Option':
+    if x['duid'] != None:
+      d = dict((k, v) for k, v in x.iteritems() if k not in 'duid')
+      return d
   else:
     return x

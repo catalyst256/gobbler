@@ -47,7 +47,7 @@ def find_layers(pkts, pcap):
       yield packet
       packet.clear()
   except Exception as e:
-    print RED + 'Error within packet: ' + str(count) + ', the error was: ' + str(e) + END
+    print RED + 'Error within packet: ' + str(count) + ', on layer: ' + layer.name + ' . The full error was: ' + str(e) + END
 
 def packet_summary(pkts, pcap):
   packet = OrderedDict()
