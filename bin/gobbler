@@ -4,6 +4,10 @@
 # Part of the sniffMyPackets suite http://www.sniffmypackets.net
 # Written by @catalyst256 / catalyst256@gmail.com
 
+# HTTP Layers are 3rd party code which was taken from here: https://github.com/invernizzi/scapy-http
+# Full credit for the http requests and responses goes to Steeve Barbeau, Luca Invernizzi
+
+
 import sys
 import optparse
 from ConfigParser import SafeConfigParser
