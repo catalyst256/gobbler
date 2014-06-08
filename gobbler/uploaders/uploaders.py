@@ -2,8 +2,9 @@
 
 import socket
 import re
-from time import sleep
 import json
+from pymongo import MongoClient
+from bson.binary import Binary
 
 # Welcome to Gobbler, the Scapy pcap parser and dump scripts
 # Part of the sniffMyPackets suite http://www.sniffmypackets.net
@@ -46,7 +47,6 @@ def json_dump(s):
   print t
 
 def mongo_dump(mongo_server, mongo_port, mongo_db, mongo_collection, s):
-  from pymongo import MongoClient
   try:
     connection = MongoClient(mongo_server, mongo_port)
     db = connection[mongo_db]

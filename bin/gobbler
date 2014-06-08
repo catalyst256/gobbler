@@ -95,7 +95,6 @@ def main():
       pkts = loadpackets(pcap)
       x = find_layers(pkts, pcap)
       for s in x:
-        # print s
         json_dump(s)
       print GREEN + 'Upload Complete' + END
     if summary == 'light':
