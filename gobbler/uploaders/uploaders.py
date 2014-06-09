@@ -3,8 +3,8 @@
 import socket
 import re
 import json
-from pymongo import MongoClient
-from bson.binary import Binary
+import pymongo
+from collections import OrderedDict
 
 # Welcome to Gobbler, the Scapy pcap parser and dump scripts
 # Part of the sniffMyPackets suite http://www.sniffmypackets.net
@@ -48,11 +48,17 @@ def json_dump(s):
 
 def mongo_dump(mongo_server, mongo_port, mongo_db, mongo_collection, s):
   try:
-    connection = MongoClient(mongo_server, mongo_port)
+    connection = pymongo.MongoClient(mongo_server, mongo_port)
     db = connection[mongo_db]
     coll = db[mongo_collection]
-    post = s
-    coll.insert(post)
+  except pymongo.errors.ConnectionFailure, e:
+    print RED + "Could not connect to MongoDB: %s" % e + END
+  try:
+    v = json.dumps(s, encoding="latin-1")
+    i = re.sub('\[\d*\]', '', v)
+    i = OrderedDict(json.loads(i))
+    coll.insert(i)
+    print i
   except Exception, e:
     print e
     pass

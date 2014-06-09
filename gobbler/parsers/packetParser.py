@@ -19,7 +19,7 @@ GREEN = '\033[92m'
 bind_layers(TCP, HTTP)
 
 def rename_layer(x, n):
-  n = n.lower().replace(' ', '_').replace('-', '_') + '_'
+  n = n.lower().replace(' ', '_').replace('-', '_').replace('.', '_') + '_'
   return dict((n+k.lower(),f(v) if hasattr(v,'keys') else v) for k,v in x.items())
 
 def find_layers(pkts, pcap):
@@ -37,7 +37,7 @@ def find_layers(pkts, pcap):
           x = p[0][i].fields
           t = exclude_layers(x, layer.name)
           s = rename_layer(t, layer.name)
-          v = '{"[' + str(i) + ']' + layer.name + '":' + str(s) + '}'
+          v = '{"[' + str(i) + ']' + layer.name.replace('.','_') + '":' + str(s) + '}'
           s = eval(v)
           packet.update(s)
         else:
