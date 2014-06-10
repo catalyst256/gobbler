@@ -54,14 +54,21 @@ def packet_summary(pkts, pcap):
   count = 1
   try:
     for p in pkts:
+      p_header = {"Buffer": {"timestamp": datetime.datetime.fromtimestamp(p.time).strftime('%Y-%m-%d %H:%M:%S.%f'), "packetnumber": count, "pcapfile": pcap, "packet_length": p.len}}
+      packet.update(p_header)
+      if p.haslayer(Ether):
+        p_ether = {"Ethernet": {"ether_src": p[Ether].src, "ether_dst": p[Ether].dst}}
+        packet.update(p_ether)
       if p.haslayer(IP):
-        p_header = {"Buffer": {"timestamp": datetime.datetime.fromtimestamp(p.time).strftime('%Y-%m-%d %H:%M:%S.%f'), "packet_len": p[0].len, "packetnumber": count, "pcapfile": pcap}}
-        packet.update(p_header)
         p_ip = {"IP": {"ip_src": p[IP].src, "ip_dst": p[IP].dst, "ip_ttl": p[IP].ttl}}
         packet.update(p_ip)
-        p_proto = {"Protocol": {"proto": p[0][2].name}}
-        packet.update(p_proto)
-        count += 1
+      if p.haslayer(TCP):
+        p_tcp = {"TCP": {"tcp_sport": p[TCP].sport, "tcp_dport": p[TCP].dport, "tcp_flags": p[TCP].flags}}
+        packet.update(p_tcp)
+      if p.haslayer(UDP):
+        p_udp = {"UDP": {"udp_sport": p[UDP].sport, "udp_dport": p[UDP].dport, "udp_len": p[UDP].len}}
+        packet.update(p_udp)
+      count += 1
       yield packet
       packet.clear()
   except Exception, e:
