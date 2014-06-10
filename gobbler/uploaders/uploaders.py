@@ -21,7 +21,7 @@ def splunk_shot_udp(splunk_server, splunk_port, s):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.connect((splunk_server, splunk_port))
     i = ','.join("%s=%r" % (key,val) for (key,val) in s.iteritems())
-    i = re.sub('\[\d*\]\w*.\w*.\w*={', '', i)
+    i = re.sub('\w*.\w*.\w*\[\d*\]={', ' ,', i)
     i = re.sub('\w{1,}={', '', i)
     i = i.replace('{', '').replace('}','').replace(': ', '=').replace('\'', '').replace(' , ', ' ')
     sock.send(i)
@@ -34,7 +34,7 @@ def splunk_shot_tcp(splunk_server, splunk_port, s):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect((splunk_server, splunk_port))
     i = ', '.join("%s=%r" % (key,val) for (key,val) in s.iteritems())
-    i = re.sub('\[\d*\]\w*.\w*.\w*={', '', i)
+    i = re.sub('\w*.\w*.\w*\[\d*\]={', ' ,', i)
     i = re.sub('\w{1,}={', '', i)
     i = i.replace('{', '').replace('}','').replace('\'', '').replace(': ', '=').replace(' , ', ' ')
     sock.send(i)
@@ -43,7 +43,7 @@ def splunk_shot_tcp(splunk_server, splunk_port, s):
   sock.close()
 
 def json_dump(s):
-  t = json.dumps(s, sort_keys=True,indent=2, separators=(',', ': '), ensure_ascii=False, encoding="utf-8")
+  t = json.dumps(s, indent=2, separators=(',', ': '), ensure_ascii=False, encoding="utf-8")
   print t
 
 def mongo_dump(mongo_server, mongo_port, mongo_db, mongo_collection, s):
@@ -54,11 +54,9 @@ def mongo_dump(mongo_server, mongo_port, mongo_db, mongo_collection, s):
   except pymongo.errors.ConnectionFailure, e:
     print RED + "Could not connect to MongoDB: %s" % e + END
   try:
-    v = json.dumps(s, encoding="latin-1")
-    i = re.sub('\[\d*\]', '', v)
-    i = OrderedDict(json.loads(i))
-    coll.insert(i)
-    print i
+    v = OrderedDict(json.loads(json.dumps(s, encoding="latin-1")))
+    coll.insert(v)
+    # print v
   except Exception, e:
     print e
     pass

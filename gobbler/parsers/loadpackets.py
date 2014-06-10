@@ -8,8 +8,10 @@
 
 import logging
 import os
+import sys
 logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
 from scapy.all import rdpcap
+from scapy.error import Scapy_Exception
 
 
 # Add some colouring for printing packets later
@@ -21,9 +23,13 @@ RED = '\033[91m'
 def loadpackets(pcap):
   if os.path.isfile(pcap):
     print GREEN + 'Loading pcap file: ' + pcap + END
-    p = rdpcap(pcap)
-    print YELLOW + 'Number of packets: ' + str(len(p)) + END
-    return p
+    try:
+      p = rdpcap(pcap)
+      print YELLOW + 'Number of packets: ' + str(len(p)) + END
+      return p
+    except Scapy_Exception as msg:
+      print RED + str(msg) + END
+      sys.exit(0)
   else:
     print RED + 'ERROR: You sure that\'s the right file location???: [' + pcap + ']' + END
   
