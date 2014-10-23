@@ -47,15 +47,13 @@ def json_dump(s):
   t = json.dumps(s, indent=2, separators=(',', ': '), ensure_ascii=False, encoding="utf-8")
   print t
 
-def elk_dump(elkserver, elkport, s):
+def elk_dump(elkserver, elkport, elkindex, s):
   try:
     e = json.dumps(s, indent=2, separators=(',', ': '), ensure_ascii=False, encoding="utf-8")
     x = json.loads(e)
     elk_type = x['Buffer']['pcapfile']
     elk_id = x['Buffer']['packetnumber']
-    print elk_type
-    print elk_id
-    url = 'http://' + str(elkserver) + ':' + str(elkport) + '/packets/' + str(elk_type) + '/' + str(elk_id)
+    url = 'http://' + str(elkserver) + ':' + str(elkport) + str(elkindex) + str(elk_type) + '/' + str(elk_id)
     r = requests.post(url, data=e)
   except Exception, e:
     print RED + str(e) + END

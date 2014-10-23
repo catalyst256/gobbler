@@ -57,6 +57,7 @@ def main():
   mongo_collection = conf.get('mongodb', 'collection').strip('\'')
   elkserver = conf.get('elk', 'server').strip('\'')
   elkport = conf.get('elk', 'port').strip('\'')
+  elkindex = conf.get('elk', 'index').strip('\'')
 
   # Work out the listener for splunk and call the function
   if upload == 'splunk':
@@ -117,7 +118,7 @@ def main():
     pkts = loadpackets(pcap)
     x = find_layers(pkts, pcap)
     for s in x:
-      elk_dump(elkserver, elkport, s)
+      elk_dump(elkserver, elkport, elkindex, s)
   if upload == 'screen':
     print GREEN + 'Outputting to Screen' + END
     pkts = loadpackets(pcap)
