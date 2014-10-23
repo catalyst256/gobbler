@@ -49,15 +49,14 @@ def json_dump(s):
 
 def elk_dump(elkserver, elkport, elkindex, s):
   try:
-    e = json.dumps(s, indent=2, separators=(',', ': '), ensure_ascii=False, encoding="utf-8")
-    x = json.loads(e)
-    elk_type = x['Buffer']['pcapfile']
-    elk_id = x['Buffer']['packetnumber']
-    url = 'http://' + str(elkserver) + ':' + str(elkport) + str(elkindex) + str(elk_type) + '/' + str(elk_id)
-    r = requests.post(url, data=e)
+    e = json.loads(json.dumps(s, indent=2, separators=(',', ': '), ensure_ascii=False, encoding="latin-1"))
+    v = OrderedDict(json.loads(json.dumps(s, encoding="latin-1")))
+    elk_type = e['Buffer']['pcapfile']
+    elk_id = e['Buffer']['packetnumber']
+    url = 'http://' + str(elkserver) + ':' + str(elkport) + '/' + str(elkindex) + '/' + str(elk_type) + '/' + str(elk_id)
+    r = requests.post(url, data=v)
   except Exception, e:
     print RED + str(e) + END
-
 
 def mongo_dump(mongo_server, mongo_port, mongo_db, mongo_collection, s):
   try:

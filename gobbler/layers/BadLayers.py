@@ -59,5 +59,9 @@ def exclude_layers(x, xname):
     if x['duid'] != None:
       d = dict((k, v) for k, v in x.iteritems() if k not in 'duid')
       return d
+  if xname == 'IPv6 Extension Header - Hop-by-Hop Options Header':
+    if x['options'] != None:
+      d = dict((k,v) for k, v in x.iteritems() if k not in 'options')
+      return d
   else:
     return x
