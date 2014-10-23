@@ -4,6 +4,7 @@ import socket
 import re
 import json
 import pymongo
+import requests
 from collections import OrderedDict
 
 # Welcome to Gobbler, the Scapy pcap parser and dump scripts
@@ -27,7 +28,7 @@ def splunk_shot_udp(splunk_server, splunk_port, s):
     sock.send(i)
     sock.close()
   except Exception, e:
-    print e
+    print RED + str(e) + END
 
 def splunk_shot_tcp(splunk_server, splunk_port, s):
   try:
@@ -39,12 +40,26 @@ def splunk_shot_tcp(splunk_server, splunk_port, s):
     i = i.replace('{', '').replace('}','').replace('\'', '').replace(': ', '=').replace(' , ', ' ')
     sock.send(i)
   except Exception, e:
-    print e
+    print RED + str(e) + END
   sock.close()
 
 def json_dump(s):
   t = json.dumps(s, indent=2, separators=(',', ': '), ensure_ascii=False, encoding="utf-8")
   print t
+
+def elk_dump(elkserver, elkport, s):
+  try:
+    e = json.dumps(s, indent=2, separators=(',', ': '), ensure_ascii=False, encoding="utf-8")
+    x = json.loads(e)
+    elk_type = x['Buffer']['pcapfile']
+    elk_id = x['Buffer']['packetnumber']
+    print elk_type
+    print elk_id
+    url = 'http://' + str(elkserver) + ':' + str(elkport) + '/packets/' + str(elk_type) + '/' + str(elk_id)
+    r = requests.post(url, data=e)
+  except Exception, e:
+    print RED + str(e) + END
+
 
 def mongo_dump(mongo_server, mongo_port, mongo_db, mongo_collection, s):
   try:
@@ -56,7 +71,6 @@ def mongo_dump(mongo_server, mongo_port, mongo_db, mongo_collection, s):
   try:
     v = OrderedDict(json.loads(json.dumps(s, encoding="latin-1")))
     coll.insert(v)
-    # print v
   except Exception, e:
     print e
     pass

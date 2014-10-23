@@ -25,7 +25,7 @@ def main():
   print GREEN + "Welcome to Gobbler, the pcap file muncher & regurgitater. Written by @catalyst256"  + END
   parser = optparse.OptionParser(RED + "Usage: ./gobbler.py -p <pcap file> -u <upload> -s <summary>\nExample: ./gobbler.py -p test.pcap -u splunk -s light"+ END)
   parser.add_option('-p', dest='pcapFile', type='string', help='specify pcap filename')
-  parser.add_option('-u', dest='upload', type='string', help='specify upload method (i.e. splunk or json)')
+  parser.add_option('-u', dest='upload', type='string', help='specify upload method (i.e. splunk, json, mongodb, elk)')
   parser.add_option('-s', dest='summary', type='string', help='specify summary level (full/light)')
   parser.add_option('-c', dest='conf', type='string', help='configuration file')
   (options, args) = parser.parse_args()
@@ -55,6 +55,8 @@ def main():
   mongo_port = int(conf.get('mongodb', 'port'))
   mongo_db = conf.get('mongodb', 'db').strip('\'')
   mongo_collection = conf.get('mongodb', 'collection').strip('\'')
+  elkserver = conf.get('elk', 'server').strip('\'')
+  elkport = conf.get('elk', 'port').strip('\'')
 
   # Work out the listener for splunk and call the function
   if upload == 'splunk':
@@ -110,6 +112,12 @@ def main():
     x = find_layers(pkts, pcap)
     for s in x:
       mongo_dump(mongo_server, mongo_port, mongo_db, mongo_collection, s)
+  if upload == 'elk':
+    print GREEN + 'Outputting to Elasticsearch' + END
+    pkts = loadpackets(pcap)
+    x = find_layers(pkts, pcap)
+    for s in x:
+      elk_dump(elkserver, elkport, s)
   if upload == 'screen':
     print GREEN + 'Outputting to Screen' + END
     pkts = loadpackets(pcap)
